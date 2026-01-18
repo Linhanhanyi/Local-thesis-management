@@ -1,6 +1,7 @@
 # PaperDesk
 
-Local paper management desktop app (Electron + SQLite) with Ollama-assisted search ranking.
+PaperDesk 是一款本地优先的论文管理桌面应用（Electron + SQLite），支持 PDF 快速检索、元数据管理与批量操作，并可选用 Ollama 或第三方 API 提升排序与推荐，数据全程保存在本机。
+PaperDesk is a local-first paper management desktop app (Electron + SQLite) that supports fast PDF retrieval, rich metadata management, and optional Ollama or third-party APIs for ranking and recommendations—your data stays on your machine.
 
 ## Features
 - Scan folders or individual PDFs (recursive for folders).
@@ -15,11 +16,22 @@ Local paper management desktop app (Electron + SQLite) with Ollama-assisted sear
 - GPT-style UI for fast browsing and editing.
 - Optional Ollama ranking to sort search results.
 
+## Tech stack
+- Electron, Node.js
+- SQLite (better-sqlite3)
+- pdf-parse
+
 ## Run (dev)
 ```powershell
 npm install
 npx electron-rebuild -f -w better-sqlite3
 npm run start
+```
+
+## Build (release)
+```powershell
+npm install
+npm run build
 ```
 
 ## Usage
