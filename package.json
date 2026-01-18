@@ -1,0 +1,32 @@
+{
+  "name": "paperdesk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Local paper management desktop app",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron .",
+    "build": "electron-builder"
+  },
+  "build": {
+    "appId": "com.paperdesk.local",
+    "productName": "本地论文管理",
+    "directories": {
+      "output": "dist-build"
+    },
+    "win": {
+      "target": ["nsis", "portable"]
+    }
+  },
+  "dependencies": {
+    "better-sqlite3": "^9.4.0",
+    "pdf-parse": "^1.1.1",
+    "smart-buffer": "^4.2.0"
+  },
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3",
+    "electron-rebuild": "^3.2.9"
+  }
+}

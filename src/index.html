@@ -1,0 +1,353 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>论文管家</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="brand">
+          <div class="logo">论文</div>
+          <div class="brand-text">
+            <div class="title">论文管家</div>
+            <div class="subtitle">本地文献管理</div>
+          </div>
+        </div>
+        <button class="nav-toggle" data-nav-toggle>菜单</button>
+        <nav class="nav" data-nav-panel>
+          <button class="nav-item is-active" data-nav="library">论文库</button>
+          <button class="nav-item" data-nav="search">搜索</button>
+          <button class="nav-item" data-nav="stats">统计分析</button>
+          <button class="nav-item" data-nav="sources">来源与规则</button>
+          <button class="nav-item" data-nav="settings">设置</button>
+        </nav>
+        <div class="topbar-actions">
+          <input class="topbar-search" type="search" placeholder="快速搜索..." data-global-search />
+          <div class="status" data-status></div>
+        </div>
+      </header>
+
+      <main class="main">
+        <section class="page is-active" data-page="library">
+          <div class="page-header">
+            <div class="page-actions">
+              <button class="primary" data-scan>扫描来源</button>
+              <button class="ghost" data-add-paper>手动添加论文</button>
+              <button class="ghost" data-extract-all>一键提取元数据</button>
+              <button class="ghost" data-rollback-extract>回滚上次提取</button>
+            </div>
+            <div class="extract-options">
+              <label class="inline-toggle">
+                <input type="checkbox" data-extract-selected />
+                <span>仅提取已选</span>
+              </label>
+              <label class="inline-toggle">
+                <input type="checkbox" data-extract-save checked />
+                <span>保存存档</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="progress" data-progress>
+            <div class="progress-bar">
+              <div class="progress-fill" data-progress-fill></div>
+            </div>
+            <div class="progress-text" data-progress-text>等待扫描</div>
+          </div>
+
+          <div data-results-host="library"></div>
+        </section>
+
+        <section class="page" data-page="search">
+          <div class="page-title">搜索</div>
+          <div class="search-header">
+            <div class="search-mode-tabs">
+              <button class="tab-button is-active" data-search-mode="basic">普通检索</button>
+              <button class="tab-button" data-search-mode="ai">AI 意图检索</button>
+            </div>
+          </div>
+
+          <div class="search panel">
+            <input type="text" placeholder="请输入搜索内容..." data-search />
+            <button class="primary" data-search-submit>搜索</button>
+            <button class="ghost" data-llm-rank>LLM 排序</button>
+          </div>
+
+          <div class="search-mode is-active" data-search-panel="basic">
+            <div class="scope-row">
+              <span class="scope-label">搜索范围</span>
+              <div class="chip-row" data-scope-row>
+                <button class="chip is-active" data-scope="all">全部</button>
+                <button class="chip" data-scope="title">标题</button>
+                <button class="chip" data-scope="abstract">摘要</button>
+                <button class="chip" data-scope="tags">标签</button>
+                <button class="chip" data-scope="authors">作者</button>
+                <button class="chip" data-scope="keywords">关键词</button>
+              </div>
+              <button class="ghost" data-advanced-toggle>高级筛选</button>
+            </div>
+            <div class="filters filters-advanced" data-advanced-panel>
+              <div class="filter-group">
+                <input type="text" placeholder="标题" data-filter-title />
+                <input type="text" placeholder="标签（逗号分隔）" data-filter-tags />
+                <input type="text" placeholder="作者" data-filter-authors />
+                <input type="text" placeholder="研究方向" data-filter-subject />
+              </div>
+              <div class="filter-group">
+                <input type="text" placeholder="类别" data-filter-category />
+                <input type="text" placeholder="期刊" data-filter-journal />
+                <input type="text" placeholder="关键词" data-filter-keywords />
+              </div>
+              <div class="filter-group">
+                <input type="text" placeholder="摘要包含" data-filter-abstract />
+                <input type="number" placeholder="起始年份" data-filter-year-from />
+                <input type="number" placeholder="截止年份" data-filter-year-to />
+                <label class="inline-toggle">
+                  <input type="checkbox" data-filter-needs-enrichment />
+                  <span>待补全/待校对</span>
+                </label>
+                <button class="ghost" data-filter-clear>清空</button>
+              </div>
+              <div class="filter-group">
+                <input type="text" placeholder="保存检索名" data-filter-save-name />
+                <button class="ghost" data-filter-save>保存检索</button>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="section-header">
+                <span>已保存检索</span>
+              </div>
+              <div class="saved-searches" data-saved-searches></div>
+            </div>
+          </div>
+
+          <div class="search-mode" data-search-panel="ai">
+            <div class="model-search panel">
+              <div class="model-search-header">
+                <div class="model-search-title">AI 意图检索</div>
+                <div class="model-search-actions">
+                  <label class="inline-toggle">
+                    <input type="checkbox" data-semantic-enabled checked />
+                    <span>语义召回</span>
+                  </label>
+                  <label class="inline-toggle">
+                    <input type="checkbox" data-model-match-any />
+                    <span>任一条件</span>
+                  </label>
+                  <div class="segmented" data-recall-strength>
+                    <button class="segmented-btn" data-strength="loose">宽松</button>
+                    <button class="segmented-btn is-active" data-strength="balanced">平衡</button>
+                    <button class="segmented-btn" data-strength="strict">严格</button>
+                  </div>
+                </div>
+              </div>
+              <div class="model-search-row">
+                <input type="text" placeholder="例如：找 2020 年后与智能制造相关、含 AI 方法的论文" data-model-query />
+                <button class="ghost" data-model-analyze>解析意图</button>
+                <button class="primary" data-model-apply>应用检索</button>
+              </div>
+              <div class="intent-chips" data-intent-chips></div>
+              <div class="intent-details">
+                <button class="ghost" data-intent-detail-toggle>查看解析细节</button>
+              </div>
+              <div class="model-conditions" data-model-conditions>
+                <div class="condition-grid">
+                  <label>语义查询<input data-model-semantic /></label>
+                  <label>标题<input data-model-title /></label>
+                  <label>作者<input data-model-authors /></label>
+                  <label>研究方向<input data-model-subject /></label>
+                  <label>标签<input data-model-tags /></label>
+                  <label>关键词<input data-model-keywords /></label>
+                  <label>类别<input data-model-category /></label>
+                  <label>期刊<input data-model-journal /></label>
+                  <label>起始年份<input type="number" data-model-year-from /></label>
+                  <label>截止年份<input type="number" data-model-year-to /></label>
+                  <label>语义阈值<input type="number" step="0.05" min="0" max="1" data-recall-min-score /></label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div data-results-host="search"></div>
+        </section>
+
+        <section class="page" data-page="stats">
+          <div class="page-title">统计分析</div>
+          <div class="panel">
+            <div class="section-header">
+              <span>统计维度</span>
+            </div>
+            <div class="stats-controls">
+              <label class="inline-input">
+                <span>维度</span>
+                <select data-stats-dimension>
+                  <option value="year">年份</option>
+                  <option value="authors">作者</option>
+                  <option value="subject">研究方向</option>
+                  <option value="tags">标签</option>
+                  <option value="category">类别</option>
+                  <option value="journal">期刊</option>
+                </select>
+              </label>
+              <button class="ghost" data-stats-select-all>全选</button>
+              <button class="ghost" data-stats-view>查看结果</button>
+              <button class="primary" data-stats-export>导出分类</button>
+            </div>
+            <div class="stats-list" data-stats-list></div>
+          </div>
+        </section>
+
+        <section class="page" data-page="sources">
+          <div class="page-title">来源与规则</div>
+          <div class="grid-two">
+            <div class="panel">
+              <div class="section-header">
+                <span>来源</span>
+                <div class="button-row">
+                  <button class="ghost" data-add-folder>+ 文件夹</button>
+                  <button class="ghost" data-add-file>+ 文件</button>
+                </div>
+              </div>
+              <div class="sources" data-sources></div>
+            </div>
+            <div class="panel">
+              <div class="section-header">
+                <span>忽略规则</span>
+                <button class="ghost" data-add-ignore>添加</button>
+              </div>
+              <div class="ignore-input">
+                <input type="text" placeholder="例如：draft*.pdf 或某文档" data-ignore-pattern />
+              </div>
+              <div class="ignore-list" data-ignore-list></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" data-page="settings">
+          <div class="page-title">设置</div>
+          <div class="panel settings-panel">
+            <div class="panel-sub">显示设置</div>
+            <label class="inline-toggle">
+              <input type="checkbox" data-translate-enabled />
+              <span>开启论文信息中文翻译</span>
+            </label>
+            <button class="ghost" data-translate-refresh>刷新翻译</button>
+          </div>
+          <div class="panel settings-panel">
+            <div class="panel-sub">本地模型连接</div>
+            <label>地址<input data-settings-endpoint placeholder="http://localhost:11434" /></label>
+            <label>模型<input data-settings-model placeholder="llama3" /></label>
+            <label>向量模型<input data-settings-embed-model placeholder="nomic-embed-text" /></label>
+            <div class="settings-actions">
+              <button class="ghost" data-settings-test>一键连接</button>
+              <span class="settings-status" data-settings-status>未连接</span>
+            </div>
+            <div class="settings-footer">
+              <button class="primary" data-settings-save>保存</button>
+            </div>
+          </div>
+          <div class="panel settings-panel">
+            <div class="panel-sub">API 模型服务</div>
+            <label class="inline-toggle">
+              <input type="checkbox" data-local-model-mode />
+              <span>本地模型模式（使用 Ollama）</span>
+            </label>
+            <label>服务商
+              <select data-model-provider>
+                <option value="ollama">本地 Ollama</option>
+                <option value="siliconflow">硅基流动</option>
+                <option value="dashscope">阿里云通义</option>
+                <option value="deepseek">DeepSeek</option>
+                <option value="zhipu">智谱</option>
+                <option value="openai_compat">OpenAI 兼容</option>
+              </select>
+            </label>
+            <label>API Base<input data-model-base placeholder="https://api.siliconflow.cn/v1" /></label>
+            <label>API Key<input data-model-key placeholder="sk-..." /></label>
+            <label>对话模型<input data-model-chat placeholder="deepseek-chat" /></label>
+            <label>向量模型<input data-model-embed placeholder="text-embedding-3-small" /></label>
+            <div class="settings-actions">
+              <button class="ghost" data-model-preset="siliconflow">硅基流动预设</button>
+              <button class="ghost" data-model-preset="dashscope">阿里云预设</button>
+              <button class="ghost" data-model-preset="deepseek">DeepSeek 预设</button>
+              <button class="ghost" data-model-preset="zhipu">智谱预设</button>
+              <button class="ghost" data-model-preset="openai_compat">通用兼容预设</button>
+            </div>
+            <div class="settings-footer">
+              <button class="primary" data-model-save>保存 API 配置</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="content" data-results-panel>
+          <div class="papers">
+            <div class="progress translate-progress is-hidden" data-translate-progress>
+              <div class="progress-bar">
+                <div class="progress-fill" data-translate-progress-fill></div>
+              </div>
+              <div class="progress-text" data-translate-progress-text>翻译进度：0/0</div>
+            </div>
+            <div class="list-toolbar">
+              <div class="list-title">论文列表</div>
+              <div class="list-controls">
+                <label class="inline-input">
+                  <span>排序</span>
+                  <select data-sort-by>
+                    <option value="updated_desc">最近更新</option>
+                    <option value="year_desc">年份降序</option>
+                    <option value="year_asc">年份升序</option>
+                    <option value="title_asc">标题 A-Z</option>
+                    <option value="score_desc">相关度</option>
+                  </select>
+                </label>
+                <button class="ghost" data-select-all>一键全选</button>
+              </div>
+            </div>
+            <div class="bulk-bar" data-bulk-bar>
+              <div class="bulk-info">已选：<span data-selected-count>0</span></div>
+              <input type="text" placeholder="为已选添加标签（逗号分隔）" data-bulk-tags />
+              <button class="ghost" data-bulk-apply>应用标签</button>
+              <button class="ghost" data-bulk-summarize>批量总结</button>
+              <div class="dropdown" data-export-dropdown>
+                <button class="ghost" data-export-toggle>导出 ▼</button>
+                <div class="dropdown-menu" data-export-menu>
+                  <button data-bulk-export-bibtex>导出 BibTeX</button>
+                  <button data-bulk-export-apa>导出 APA</button>
+                  <button data-bulk-export-csv>导出 CSV</button>
+                  <button data-bulk-export-pdf>导出 PDF</button>
+                  <button data-bulk-export-ris>导出 RIS</button>
+                  <button data-bulk-export-mla>导出 MLA</button>
+                  <button data-bulk-export-ieee>导出 IEEE</button>
+                </div>
+              </div>
+            </div>
+            <div class="list-meta">
+              <span>共 <span data-total-count>0</span> 篇</span>
+            </div>
+            <div class="list" data-paper-list></div>
+            <div class="pager">
+              <button class="ghost" data-page-prev>上一页</button>
+              <span data-page-info>第 1 / 1 页</span>
+              <button class="ghost" data-page-next>下一页</button>
+              <div class="pager-size">
+                <label>每页</label>
+                <select data-page-size>
+                  <option value="10">10</option>
+                  <option value="20" selected>20</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                </select>
+              </div>
+            </div>
+          </div>
+          <div class="detail" data-detail></div>
+        </section>
+      </main>
+    </div>
+
+    <script src="renderer.js"></script>
+  </body>
+</html>
