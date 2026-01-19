@@ -1,8 +1,7 @@
 # PaperDesk
 
-PaperDesk 是一款本地优先的论文管理桌面应用（Electron + SQLite），支持 PDF 快速检索、元数据管理与批量操作，并可选用 Ollama 或第三方 API 提升排序与推荐，数据全程保存在本机。
-PaperDesk is a local-first paper management desktop app (Electron + SQLite) that supports fast PDF retrieval, rich metadata management, and optional Ollama or third-party APIs for ranking and recommendations—your data stays on your machine.
-
+PaperDesk 是一款本地的论文管理桌面应用（Electron + SQLite），可目对论文进行管理，支持使用api或本地ollama分析论文以及翻译，提取论文核心内容。可通过搜索标签，关键词，作者，标题，摘要等内容快速定位论文位置，解决无法找到本地论文的苦恼。
+PaperDesk is a native paper management desktop application (Electron + SQLite) that allows you to manage papers, analyze papers and translations using apis or native ollama, and extract the core content of papers. You can quickly locate papers by searching tags, keywords, authors, titles, abstracts, and other content to solve the frustration of not finding local papers.
 ## Features
 - Scan folders or individual PDFs (recursive for folders).
 - Extracts text from the first 3 pages for searchable context.
